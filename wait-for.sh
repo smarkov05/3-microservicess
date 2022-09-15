@@ -1,13 +1,12 @@
 #!/bin/bash
 # version 0.1
-# Script created to get delay before dependence services up in started containers.
+# Script created to get delay before dependent services up in started containers.
 # Usage: sh wait-for.sh [options]
-# Default params: onFailed - 10 retries, with 6 sec delay (60 sec)
 # Available options
-# -e - (REQUIRED) health-check endpoints on dependence services, can add multiple options.
-#      Implemented like chain-responsibility pattern, if one service is not available
-#      script will fail. (Doesn't have checks on correct url)
-# -c - execute command if passed all health-checks (one option, use double quotes)
+# -e - (REQUIRED) health-check endpoints on dependence services, can add several args.
+#      Implemented like chain-responsibility pattern, if one service is not availale
+#      script will fail. (It does not check the correctness of the url)
+# -c - execute command if all health-checks has been passed (one option, use double quotes)
 
 loopCount=0
 retries=10
