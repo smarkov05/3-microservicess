@@ -1,0 +1,24 @@
+docker:
+  containerName:
+    zipkin: zipkin
+    configServer: config-server
+    graphite: graphite
+
+spring:
+  config:
+    activate:
+      on-profile: docker-env
+  application:
+    name: one-service
+  cloud:
+    config:
+      uri: http://${docker.containerName.configServer}:9000
+  zipkin:
+    base-url: http://${docker.containerName.zipkin}:9411/
+
+management:
+  metrics:
+    export:
+      graphite:
+        host: ${docker.containerName.graphite}
+        port: 2004

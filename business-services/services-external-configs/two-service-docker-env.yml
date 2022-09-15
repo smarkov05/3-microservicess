@@ -1,0 +1,17 @@
+server:
+    port: 8882
+spring:
+  config:
+    activate:
+      on-profile: docker-env
+
+docker:
+  containerName:
+    discovery: discovery
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://${docker.containerName.discovery}:8761/eureka}
+  instance:
+    preferIpAddress: true

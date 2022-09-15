@@ -1,0 +1,4 @@
+# Project exclude paths
+/business-services/configserver/target/
+/business-services/one/target/
+/business-services/two/target/

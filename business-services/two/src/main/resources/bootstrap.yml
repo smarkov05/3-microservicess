@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: two-service
+  cloud:
+    config:
+      uri: http://localhost:9000
+  zipkin:
+    base-url: http://localhost:9411/

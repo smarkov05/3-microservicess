@@ -1,0 +1,59 @@
+version: '3.1'
+
+services:
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+
+  graphite:
+    image: graphiteapp/graphite-statsd
+    container_name: graphite
+    ports:
+      - "80:80"
+
+  discovery:
+    build:
+      context: C:\local_storage\java_projects\mentoring_projects\3_microservices\3-microservicess\platform-services\discovery\target
+    image: discovery:1.0
+    container_name: discovery
+
+  api-gateway:
+    build:
+      context: C:\local_storage\java_projects\mentoring_projects\3_microservices\3-microservicess\platform-services\apigateway\target
+    image: apigateway:1.0
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    command: sh -c '/app/wait-for.sh -e discovery:8761/health-check -c "java -jar -Dspring.profiles.active=docker-env /app/apigateway-1.0-SNAPSHOT.jar"'
+    depends_on:
+      - discovery
+
+  config-server:
+    build:
+      context: C:\local_storage\java_projects\mentoring_projects\3_microservices\3-microservicess\business-services\configserver\target
+    image: config-server:1.0
+    container_name: config-server
+    volumes:
+      - 'C:\Users\Serhii_Markovskyi\Desktop\config:/home/config'
+
+  one-service:
+    build:
+      context: C:\local_storage\java_projects\mentoring_projects\3_microservices\3-microservicess\business-services\one\target
+    image: one-service:1.0
+    container_name: one-service
+    command: sh -c '/app/wait-for.sh -e config-server:9000/health-check -e discovery:8761/health-check -c "java -jar -Dspring.profiles.active=docker-env /app/one-1.0-SNAPSHOT.jar"'
+    depends_on:
+      - config-server
+      - discovery
+
+  two-service:
+    build:
+      context: C:\local_storage\java_projects\mentoring_projects\3_microservices\3-microservicess\business-services\two\target
+    image: two-service:1.0
+    container_name: two-service
+    command: sh -c '/app/wait-for.sh -e config-server:9000/health-check -e discovery:8761/health-check -c "java -jar -Dspring.profiles.active=docker-env /app/two-1.0-SNAPSHOT.jar"'
+    depends_on:
+      - config-server
+      - discovery
